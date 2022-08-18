@@ -1,0 +1,151 @@
+<html>
+	<head>
+		<link rel="shortcut icon" href="https://cdn.discordapp.com/attachments/905141731626999939/1008376318393598012/lastcountry.png" type="image/x-icon">
+		<title>Last Country - Lives</title>
+		<meta charset="UTF-8"/>
+		<style>
+            * {
+                background-image: url('https://cdn.discordapp.com/attachments/905141731626999939/1009461831816970290/bg4.jpg');
+            }
+			.Titrepage {
+  				color: #ffffff;
+				font-family: Calibri;
+				font-size: 70px;
+				text-align: center;
+				font-weight:bold;
+			}
+			.Pagetexte {
+  				color: #ffffff;
+				font-family: Calibri;
+				font-size: 20px;
+				text-align: center;
+			}
+			.Pageclip {
+  				color: #ffffff;
+				font-family: Calibri;
+				font-size: 20px;
+				text-align: center;
+			}
+			.Titre {
+  				color: #ffffff;
+				font-family: Calibri;
+				font-size: 18px;
+				font-weight:bold;
+			}
+			.Texte {
+				color: #adadb8;
+				font-family: Calibri;
+				font-size: 18px;
+			}
+			.Spectateur {
+				color: #adadb8;
+				font-family: Calibri;
+				font-size: 14px;
+			}
+			.Aucunlive {
+  				color: #ffffff;
+				font-family: Calibri;
+				font-size: 50px;
+				text-align: center;
+			}
+			.Bordure {
+				border: 5px solid transparent;
+			}
+			#footer {
+				text-align: center;
+				color: #adadb8;
+				font-family: Calibri;
+				font-size: 14px;
+			}
+			a:link, a:visited {
+				color: #7f5cd1;
+				text-decoration: none;
+			}
+		</style>
+		<script>
+
+			function xxx(){
+        			xhttp.open("GET", "https://api.twitch.tv/helix/streams?game_id=493959&first=100&language=fr", true);
+        			xhttp.setRequestHeader("Client-ID", "d4uvtfdr04uq6raoenvj7m86gdk16v");
+        			xhttp.send();
+            		}
+       			function Tableau(Var_Json){
+				var Var_JsonL = Var_Json.data.length;
+                		
+                		document.getElementById("Tableau").insertRow();
+				for (var a=0; a<Var_JsonL; a++){
+
+					if (Var_Json.data[a].title.toLowerCase().indexOf("lastcountry") >-1 || Var_Json.data[a].title.toLowerCase().indexOf("last country") >-1){
+						if (Var_Case < 3){
+                        				document.getElementById("Tableau").rows[Var_Ligne].insertCell();
+		            			} else {
+                        				document.getElementById("Tableau").insertRow();
+ 			            			Var_Ligne++;
+			                		document.getElementById("Tableau").rows[Var_Ligne].insertCell();
+			               			Var_Case = 0;
+			        		}
+						var Var_Debut = new Date(Var_Json.data[a].started_at)
+		          			document.getElementById("Tableau").rows[Var_Ligne].cells[Var_Case].innerHTML="<div class=Bordure title=\"" + Var_Json.data[a].title + "\" /><a href=https://www.twitch.tv/" + Var_Json.data[a].user_name  + " target='_blank'><img src='" + Var_Json.data[a].thumbnail_url.replace("{width}", 400).replace("{height}", 224) + `?d=${new Date().getTime()}` +
+		          				"' width=\"400\" height=\"224\" /></a><BR><div class=Titre />" + Var_Json.data[a].title.substring(0,49) + "</div><div class=Texte>" + Var_Json.data[a].user_name + "</div><div class=Spectateur>" +
+ 							"<span style='color: red;'>Live</span> | " + Var_Json.data[a].viewer_count + " spectateurs - Démarré à " + Var_Debut.toString().substring(16, 24) + "</div></div>";
+			           		Var_Case++
+						Var_Compte += Var_Json.data[a].viewer_count;
+						Var_Streamer ++;
+ 			    			}
+				}
+				document.getElementsByClassName("PageTexte")[0].textContent = "Liste des lives Last Country en ce moment sur Twitch: " + Var_Streamer + " streamer(s) - " + Var_Compte + " spectateur(s)";
+			}    
+       			var xhttp = new XMLHttpRequest();
+       			var Var_Compte = 0;
+       			var Var_Streamer = 0;
+       			var Var_Once = false;
+			var Var_Case = 0;
+			var Var_Ligne = 0;
+			var Var_Pag = "";
+			setInterval(function(){
+ 				for (a=document.getElementById("Tableau").rows.length-1; a>=0; a--){
+  					document.getElementById("Tableau").rows[a].remove();
+				}
+       				Var_Compte = 0;
+       				Var_Streamer = 0;
+       				Var_Once = false;
+				Var_Case = 0;
+				Var_Ligne = 0;
+				Var_Pag = "";   
+            			xxx();
+            		}, 300000);  
+			xhttp.onload = function() {
+                		Var_Pag = xhttp.responseText.substr(xhttp.responseText.indexOf("cursor\":\"")+9);
+                		Var_Pag=Var_Pag.substr(0,Var_Pag.length-3);
+                		Tableau(JSON.parse(xhttp.responseText));
+                        
+                		if (JSON.parse(xhttp.responseText).data.length==100) {
+                			xhttp.open("GET", "https://api.twitch.tv/helix/streams?game_id=493959&first=100&language=fr&after="+Var_Pag, true);
+                			xhttp.setRequestHeader("Client-ID", "d4uvtfdr04uq6raoenvj7m86gdk16v");
+                			xhttp.send();
+                		} else {
+                			if (document.getElementById("Tableau").rows[0].cells.length==0){
+        			 		document.getElementById("Tableau").rows[0].innerHTML="<img src='https://static-cdn.jtvnw.net/ttv-static/404_preview-440x248.jpg'><div class=Aucunlive>Aucun live Last Country</div>";
+      			     		}
+                        	}
+            		}            
+		</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TSP5HBFQDQ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-TSP5HBFQDQ');
+</script>
+	</head>
+	<body onload="xxx()">
+		<div class=Titrepage>Lives sur Last Country</div><BR><BR>
+		
+		<div class=Pagetexte>Liste des lives Last Country en ce moment sur Twitch: </div>
+		<table align="center" id="Tableau">
+			<tbody>
+			</tbody>
+		</table>
+</html>
